@@ -138,7 +138,7 @@ docker compose exec web python manage.py migrate
 Grupo 1 - Clase Arquitectura de computadoras
 
 ## 🏁 Estado Actual
-✔️ Proyecto completamente funcional
-✔️ Desplegado en producción
-✔️ Alojado bajo dominio propio
-✔️ Configuración profesional con estándares reales
+- ✔️ Proyecto completamente funcional
+- ✔️ Desplegado en producción
+- ✔️ Alojado bajo dominio propio
+- ✔️ Configuración profesional con estándares reales
