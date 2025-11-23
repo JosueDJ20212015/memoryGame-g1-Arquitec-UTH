@@ -130,7 +130,7 @@ Pasos clave:
 1. Actualización del archivo settings.py.
 2. Configuración del servicio DB en docker-compose.yml.
 3. Reconstrucción de migraciones:
-   ``` copy
+``` copy
 docker compose exec web python manage.py migrate
 ```
 
