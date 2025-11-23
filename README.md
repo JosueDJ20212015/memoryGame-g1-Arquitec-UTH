@@ -12,7 +12,7 @@ Este proyecto forma parte del curso de Arquitectura y Organización de Computado
 
 ## 🏗️ Arquitectura del Sistema
 El sistema opera bajo una arquitectura de tres servicios contenedorizados:
-``` copy 
+
 ┌─────────────────────────────┐
 │          NGINX              │
 │ (Reverse Proxy + Static)    │
@@ -32,7 +32,6 @@ El sistema opera bajo una arquitectura de tres servicios contenedorizados:
 │       PostgreSQL 15          │
 └──────────────────────────────┘
 
-```
 
 Tecnologías principales:
 
