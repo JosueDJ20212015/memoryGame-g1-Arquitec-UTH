@@ -1,0 +1,73 @@
+{% load socialaccount %} 
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicia Sesión con Google</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* CSS NEÓN (EL MISMO QUE USAS EN TU LOGIN) */
+        body {
+            background: radial-gradient(circle at center, #000814, #001d3d);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .login-box {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            text-align: center;
+            width: 350px;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #00bfff;
+            text-shadow: 0 0 10px #00bfff;
+        }
+        button {
+            padding: 10px;
+            background-color: #00bfff;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00bfff;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>CONTINUAR CON GOOGLE</h2>
+
+        <p>Estás a punto de iniciar sesión usando una cuenta de Google.</p>
+        <p>¿Deseas CONTINUAR?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% if form.media %}
+                {{ form.media }}
+            {% endif %}
+            <button type="submit">Continuar</button>
+        </form>
+
+        <p style="margin-top: 20px;"><a href="{% url 'account_login' %}" style="color: #00bfff; text-decoration: none;">VOLVER AL LOGIN</a></p>
+    </div>
+</body>
+</html>

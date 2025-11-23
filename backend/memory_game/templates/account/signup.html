@@ -1,0 +1,111 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>📝 Registrarse</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* [ ... Tu CSS existente para el diseño neón ... ] */
+        body {
+            background: radial-gradient(circle at center, #0b132b, #000);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            /* Aquí iría el resto del CSS de body, h1, etc., que ya tienes */
+        }
+        .login-box {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            text-align: center;
+            width: 350px;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #00bfff;
+            text-shadow: 0 0 10px #00bfff;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        input { /* ESTE ES EL ESTILO CLAVE */
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            background-color: #001d3d;
+            color: #fff;
+        }
+        button {
+            padding: 10px;
+            background-color: #00bfff;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00bfff;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .google-btn {
+            background-color: #db4437;
+            color: white;
+            box-shadow: 0 0 10px #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>📝 Registrarse</h2>
+
+        {% if form.errors %}
+            <p style="color: #ff4d4d;">Por favor corrige los errores del formulario.</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <span style="color: #ff4d4d; font-size: 0.8rem; text-align: left;">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            <button type="submit">Registrarme</button>
+        </form>
+
+        <p style="margin: 15px 0; font-size: 0.8rem; color: #aaa;">— O —</p>
+
+        <a href="{% provider_login_url 'google' %}">
+            <button type="button" class="google-btn">
+                REGISTRARSE CON GOOGLE
+            </button>
+        </a>
+
+        <div class="extra-links">
+            <p>¿Ya tienes cuenta? <a href="{% url 'account_login' %}">INICIAR SESIÓN AQUÍ</a></p>
+        </div>
+    </div>
+</body>
+</html>

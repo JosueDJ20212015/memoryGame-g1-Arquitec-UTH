@@ -1,0 +1,1086 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>GRUPO 1 - MEMORY GAME</title>
+  <style>
+    /* === 🌌 FONDO GIRATIEMPO OSCURO === */
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #000010, #000814 80%);
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      color: #fff;
+      height: 100vh;
+      perspective: 1000px;
+      position: relative;
+      opacity: 1.6;
+    }
+
+    .estrella {
+      position: absolute;
+      background: rgba(255,255,255,0.35);
+      border-radius: 50%;
+      animation: brillar 3s ease-in-out infinite alternate;
+      z-index: -5;
+    }
+    @keyframes brillar {
+      from { opacity: 0.2; transform: scale(1); }
+      to { opacity: 0.5; transform: scale(1.1); }
+    }
+
+  
+/* === PANEL TARJETA VIDRIOSA === */
+  .sidebar {
+  position: fixed;       /* Lo mantiene siempre visible */
+  top: 0;                /* Distancia desde la parte superior */
+  left: 0;               /* Lo mantiene al borde izquierdo */
+  width: 350px;          /* 🔹 Ajusta aquí el ancho del panel */
+  height: 100vh;         /* 🔹 Altura total de la pantalla (puedes cambiarla) */
+  background: rgba(0, 10, 30, 0.85);
+  border-right: 2px solid rgba(0, 200, 255, 0.3);
+  padding: 15px;         /* 🔹 Espaciado interno */
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Puedes cambiar a center o flex-end según el alineado que quieras */
+}
+
+
+  .sidebar-card {
+    width: 100%;
+    background: rgba(10, 25, 60, 0.45);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 200, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 180, 255, 0.25), inset 0 0 15px rgba(0, 100, 255, 0.2);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    color: #00eaff;
+    text-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+    animation: aparecerTarjeta 0.8s ease;
+  }
+
+  @keyframes aparecerTarjeta {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .sidebar-card h2 {
+    font-size: 1.1em;
+    color: #00eaff;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    font-weight: 100;
+  }
+
+  .sidebar-card hr {
+    border: none;
+    border-top: 1px solid rgba(0, 150, 255, 0.3);
+    margin: 12px 0;
+  }
+
+  .niveles button {
+    width: 50%;
+    background: rgba(0, 100, 180, 0.3);
+    color: #fff;
+    border: 1px solid rgba(0,200,255,0.5);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 6px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0,255,255,0.5);
+  }
+
+  .niveles button:hover {
+    background: rgba(0,200,255,0.8);
+    color: #001533;
+    box-shadow: 0 0 10px rgba(0,255,255,0.7);
+  }
+
+  .stats {
+    background: rgba(0,20,40,0.4);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: left;
+    font-size: 0.9em;
+    color: #8ae9ff;
+    box-shadow: inset 0 0 10px rgba(0,180,255,0.2);
+  }
+
+  .stats p {
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stats p span {
+    color: #fff;
+    font-weight: bold;
+  }
+
+
+
+
+
+
+
+
+
+/* === 🌌 PANEL DERECHO VIDRIOSO === */
+.rightbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100vh;
+  background: rgba(0, 10, 30, 0.85);
+  border-left: 2px solid rgba(0, 200, 255, 0.3);
+  padding: 15px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.rightbar-card {
+  width: 100%;
+  background: rgba(10, 25, 60, 0.45);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 200, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 180, 255, 0.25), inset 0 0 15px rgba(0, 100, 255, 0.2);
+  backdrop-filter: blur(12px);
+  padding: 25px;
+  color: #00eaff;
+  text-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+  text-align: center;
+  animation: aparecerTarjeta 0.8s ease;
+}
+
+.rightbar-card h2 {
+  font-size: 1.2em;
+  color: #00eaff;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.rightbar-card hr {
+  border: none;
+  border-top: 1px solid rgba(0, 150, 255, 0.3);
+  margin: 10px 0 20px;
+}
+
+/* Botones de acción derecha */
+.rightbar-card button {
+  width: 100%;
+  background: rgba(0, 100, 180, 0.3);
+  color: #fff;
+  border: 1px solid rgba(0,200,255,0.5);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0,255,255,0.5);
+}
+
+.rightbar-card button:hover {
+  background: rgba(0,200,255,0.8);
+  color: #001533;
+  box-shadow: 0 0 10px rgba(0,255,255,0.7);
+}
+
+.rightbar-card .logout {
+  background: rgba(255, 80, 80, 0.3);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+}
+
+.rightbar-card .logout:hover {
+  background: rgba(255, 50, 50, 0.8);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+
+
+
+
+
+    /* 🌀 ESTRUCTURA GIRATIEMPO */
+    .giratiempo {
+      position: absolute;
+      top: 50%;
+      left: 60%;
+      transform-style: preserve-3d;
+      animation: rotacionCentral 60s linear infinite;
+      z-index: -3;
+    }
+    @keyframes rotacionCentral {
+      from { transform: translate(-50%, -50%) rotateY(0deg) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotateY(360deg) rotateZ(360deg); }
+    }
+
+    .anillo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0,150,255,0.25);
+      transform-style: preserve-3d;
+      animation: girarAnillo 20s linear infinite;
+    }
+    .a1 { width: 250px; height: 250px; animation-duration: 18s; }
+    .a2 { width: 400px; height: 400px; animation-duration: 25s; }
+    .a3 { width: 550px; height: 550px; animation-duration: 35s; }
+
+    @keyframes girarAnillo {
+      0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+      50% { transform: rotateX(20deg) rotateY(180deg) rotateZ(90deg); }
+      100% { transform: rotateX(0deg) rotateY(360deg) rotateZ(360deg); }
+    }
+
+    /* ✨ HILOS DEL TIEMPO */
+    .hilo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 2px;
+      height: 300px;
+      background: linear-gradient(180deg, transparent, rgba(0,150,255,0.3), transparent);
+      transform-origin: top;
+      animation: girarHilo 10s linear infinite;
+      z-index: -2;
+      filter: blur(0.5px);
+    }
+    @keyframes girarHilo {
+      0% { transform: rotateZ(0deg) scaleY(1); opacity: 0.4; }
+      25% { transform: rotateZ(90deg) scaleY(1.2); opacity: 0.6; }
+      50% { transform: rotateZ(180deg) scaleY(0.8); opacity: 0.4; }
+      75% { transform: rotateZ(270deg) scaleY(1.3); opacity: 0.7; }
+      100% { transform: rotateZ(360deg) scaleY(1); opacity: 0.4; }
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat({{ nivel.columnas }}, 100px);
+      grid-gap: 15px;
+      justify-content: center;
+      margin-top: 40px;
+      margin-left: 270px; /* espacio del panel lateral */
+      margin-right: 270px; /* espacio también del lado derecho */
+      animation: aparecerTablero 1.5s ease;
+      z-index: 2;
+      position: relative;
+    }
+
+    @keyframes aparecerTablero {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+/* 🌀 Movimiento animado de los emojis dentro de las cartas */
+.fruta {
+  position: absolute;
+  font-size: 1.6em;
+  opacity: 0.9;
+  animation: moverFruta 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 3px rgba(0,200,255,0.6));
+}
+@keyframes moverFruta {
+  0% { transform: translate(0,0) rotate(0deg); }
+  25% { transform: translate(10px,-10px) rotate(10deg); }
+  50% { transform: translate(-10px,5px) rotate(-8deg); }
+  75% { transform: translate(8px,10px) rotate(8deg); }
+  100% { transform: translate(-5px,-5px) rotate(-10deg); }
+}
+
+
+
+    /* === CARTAS MODO VIDRIO === */
+    .flip-card {
+      width: 100px;
+      height: 100px;
+      perspective: 1000px;
+      position: relative;
+      border-radius: 15px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 20px rgba(0,180,255,0.2);
+      overflow: hidden;
+    }
+
+    .flip-inner {
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.35s ease;
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      color: #fff;
+      background: rgba(10, 25, 50, 0.45);
+      border: 1px solid rgba(0,150,255,0.3);
+      box-shadow: inset 0 0 20px rgba(0,200,255,0.2);
+      overflow: hidden;
+    }
+
+    .flip-front { transform: rotateY(180deg); }
+
+    .flip-card.revealed .flip-inner,
+    .flip-card.matched .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card:hover {
+      box-shadow: 0 0 25px rgba(0,200,255,0.5);
+      transform: scale(1.05);
+    }
+
+    button {
+      background: #005c99;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: background 0.3s ease;
+    }
+    button:hover { background: #0077cc; }
+
+    .footer { margin-top: 40px; color: #0088cc; font-size: 1em; }
+
+    .modal {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,30,0.8);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      visibility:hidden;
+      opacity:0;
+      transition:opacity 0.4s ease;
+      backdrop-filter:blur(4px);
+      z-index:3;
+    }
+    .modal.active { visibility:visible; opacity:1; }
+    .modal-content {
+      background: #0c2545;
+      border-radius:15px;
+      padding:30px;
+      text-align:center;
+      width:400px;
+      animation: zoomIn 0.5s ease;
+      color: #fff;
+    }
+    @keyframes zoomIn {
+      from { transform:scale(0.6); opacity:0; }
+      to { transform:scale(1); opacity:1; }
+    }
+
+
+
+
+
+/* 🌌 Modal de victoria galáctico */
+.galaxy-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 40, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 10;
+  backdrop-filter: blur(6px);
+}
+
+.galaxy-modal.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.galaxy-modal-content {
+  position: relative;
+  background: radial-gradient(circle at center, rgba(0,30,80,0.9), rgba(0,10,30,0.8));
+  border: 2px solid rgba(0,200,255,0.5);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0,200,255,0.4), inset 0 0 25px rgba(0,150,255,0.3);
+  padding: 40px 60px;
+  color: #00eaff;
+  text-shadow: 0 0 15px rgba(0,200,255,0.6);
+  text-align: center;
+  animation: holoPop 0.6s ease forwards;
+  overflow: hidden;
+}
+
+@keyframes holoPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* 💫 Anillo luminoso detrás del mensaje */
+.glow-ring {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  border: 3px solid rgba(0,255,255,0.15);
+  box-shadow: 0 0 50px rgba(0,200,255,0.3);
+  animation: spinRing 12s linear infinite;
+  z-index: -1;
+}
+
+@keyframes spinRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.galaxy-modal-content h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.galaxy-modal-content p {
+  color: #8ae9ff;
+  font-size: 1.1em;
+  margin-bottom: 25px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-glass {
+  background: rgba(0,100,180,0.3);
+  border: 1px solid rgba(0,200,255,0.6);
+  padding: 10px 25px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px rgba(0,255,255,0.4);
+  box-shadow: 0 0 10px rgba(0,180,255,0.3);
+}
+
+.btn-glass:hover {
+  background: rgba(0,200,255,0.8);
+  color: #001533;
+  box-shadow: 0 0 25px rgba(0,255,255,0.7);
+  transform: scale(1.05);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* 🌌 Transición galáctica entre niveles */
+.galactic-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(0,10,40,0.9), rgba(0,0,20,0.95));
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #00eaff;
+  font-family: "Poppins", sans-serif;
+  text-shadow: 0 0 15px rgba(0,255,255,0.6);
+  letter-spacing: 1px;
+  font-size: 1.5em;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, visibility 1s ease;
+}
+
+.galactic-transition.active {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeOutTransition 2s ease 2s forwards;
+}
+
+@keyframes fadeOutTransition {
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+.particles {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(0,255,255,0.7);
+  border-radius: 50%;
+  animation: particleMove 5s linear infinite;
+  box-shadow: 0 0 6px rgba(0,200,255,0.8);
+}
+
+.particles:nth-child(1) {
+  top: 40%;
+  left: 30%;
+  animation-delay: 0s;
+}
+
+.particles:nth-child(2) {
+  top: 60%;
+  left: 50%;
+  animation-delay: 1s;
+}
+
+.particles:nth-child(3) {
+  top: 50%;
+  left: 70%;
+  animation-delay: 2s;
+}
+
+@keyframes particleMove {
+  0% { transform: translate(0,0) scale(1); opacity: 0.8; }
+  50% { transform: translate(50px,-80px) scale(1.4); opacity: 0.6; }
+  100% { transform: translate(-40px,100px) scale(1); opacity: 0.8; }
+}
+
+
+
+
+/* === 💀 MODAL DE DERROTA === */
+.lose-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(10, 0, 0, 0.9), rgba(20, 0, 0, 0.95));
+  backdrop-filter: blur(6px);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 20;
+}
+
+.lose-modal.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 🌫️ HUMO ANIMADO EN MOVIMIENTO */
+.red-smoke-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 50, 50, 0.1) 0%, transparent 70%);
+  background-image: url('https://i.imgur.com/PC8iB3I.png');
+  background-repeat: repeat;
+  background-size: 1200px;
+  filter: blur(80px) brightness(1.4);
+  opacity: 0.6;
+  animation: moveSmoke 60s linear infinite;
+  z-index: 0;
+}
+
+@keyframes moveSmoke {
+  0% { transform: translate(-20%, -10%) scale(1); }
+  50% { transform: translate(20%, 10%) scale(1.2); }
+  100% { transform: translate(-20%, -10%) scale(1); }
+}
+
+/* 💀 CUADRO CENTRAL */
+.lose-modal-content {
+  position: relative;
+  background: rgba(30, 0, 0, 0.7);
+  border: 2px solid rgba(255, 0, 0, 0.4);
+  border-radius: 15px;
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.3);
+  padding: 40px 60px;
+  color: #ff4d4d;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  z-index: 2;
+  animation: fadeInLose 0.8s ease forwards;
+}
+
+@keyframes fadeInLose {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* 🔘 BOTONES */
+.btn-red {
+  background: rgba(255, 80, 80, 0.3);
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 8px;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.btn-red:hover {
+  background: rgba(255, 0, 0, 0.8);
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+
+.btn-gray {
+  background: rgba(100, 100, 100, 0.3);
+  border: 1px solid rgba(180, 180, 180, 0.5);
+  color: #ccc;
+  border-radius: 8px;
+  padding: 10px 25px;
+  cursor: pointer;
+  margin: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-gray:hover {
+  background: rgba(180, 180, 180, 0.7);
+  color: #000;
+  transform: scale(1.05);
+}
+
+
+.emoji-derrota {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 0;
+  color: #ff1e1e;
+  text-shadow: 0 0 50px rgba(255,0,0,0.8), 0 0 100px rgba(255,0,0,0.4);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+
+@keyframes aparecerEmoji {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    filter: blur(20px);
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    filter: blur(20px);
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- 🧭 PANEL LATERAL TARJETA -->
+<div class="sidebar">
+
+  <div class="sidebar-card">
+<p>GROUP 1 MEMORY GAME<p>
+    <p>NIVELES DEL JUEGO<p>
+    <div class="niveles">
+      {% for n in niveles %}
+        <button onclick="window.location.href='/game_board/?nivel={{ n.nombre }}'">{{ n.nombre }}</button>
+      {% endfor %}
+    </div>
+
+    <hr>
+
+    <p>ESTADÍSTICAS<p>
+    <div class="stats">
+      <p><strong>TIEMPO:</strong> <span id="tiempo">00:00</span></p>
+      <p><strong>INTENTOS:</strong> <span id="intentos">0</span></p>
+      <p><strong>PARES:</strong> <span id="pares">{{ aciertos }}</span></p>
+    </div>
+   <hr>
+
+<div class="footer">
+    NIVEL DEL JUGADOR: <strong>{{ nivel.nombre }}</strong> — CARTAS: {{ cartas|length }}<br>
+  </div>
+<hr>
+
+
+  </div>
+</div>
+
+  
+  <div class="giratiempo">
+    <div class="anillo a1"></div>
+    <div class="anillo a2"></div>
+    <div class="anillo a3"></div>
+    <div class="hilo" style="animation-delay: 0s;"></div>
+    <div class="hilo" style="animation-delay: 2s;"></div>
+    <div class="hilo" style="animation-delay: 4s;"></div>
+  </div>
+
+  <div id="board"></div>
+  
+
+<!-- 🌌 PANEL DERECHO VIDRIOSO -->
+<div class="rightbar">
+  <div class="rightbar-card">
+    <h2>INFORMACIÓN USUARIO</h2>
+    <hr>
+    <button onclick="window.location.href='{% url "estadisticas_usuario" %}'">📊 ESTADÍSTICAS PERSONAL</button>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="account_logout">🚪 CERRAR SESIÓN</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+<style>
+  #restartBtn {
+    position: absolute;
+    right: 500px;
+    bottom: 100px;
+  }
+</style>
+
+<!-- 🌟 Modal de Victoria Galáctico -->
+<div id="winModal" class="galaxy-modal">
+  <div class="galaxy-modal-content">
+    <div class="glow-ring"></div>
+    <h2>✨ ¡Nivel Completado! ✨</h2>
+    <p id="victoryText">Has superado el nivel con éxito.</p>
+    <div class="buttons">
+      <button id="retryBtn" class="btn-glass">🔁 Reintentar</button>
+      <button id="nextBtn" class="btn-glass">⏭️ Siguiente Nivel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- 💀 MODAL DE DERROTA CON HUMO ROJO ANIMADO -->
+<!-- 💀 ANIMACIÓN DE EMOJI DE DERROTA -->
+<div id="emojiDerrota" class="emoji-derrota">💀</div>
+<div id="loseModal" class="lose-modal">
+  <div class="red-smoke-layer"></div>
+  <div class="lose-modal-content">
+    <h2>💀 ¡DERROTA!</h2>
+    <p id="loseText">⏳ Tiempo agotado. ¡Has perdido la partida!</p>
+    <div class="buttons">
+      <button id="loseRetryBtn" class="btn-red">🔁 Reintentar</button>
+     
+    </div>
+  </div>
+</div>
+
+
+
+
+<audio id="winSound" src="{% static 'sounds/win.wav' %}" preload="auto"></audio>
+<audio id="loseSound" src="{% static 'sounds/win4.mp3' %}" preload="auto"></audio>
+<audio id="clickSound" src="{% static 'sounds/win8.wav' %}" preload="auto"></audio>
+<audio id="matchSound" src="{% static 'sounds/win9.wav' %}" preload="auto"></audio>
+
+
+
+
+
+  <script>
+    // ✨ Estrellas
+    for (let i = 0; i < 100; i++) {
+      const e = document.createElement("div");
+      e.classList.add("estrella");
+      e.style.width = e.style.height = Math.random() * 2 + "px";
+      e.style.top = Math.random() * 100 + "%";
+      e.style.left = Math.random() * 100 + "%";
+      document.body.appendChild(e);
+    }
+
+    // 🕒 Cronómetro de 60 segundos
+let segundos = 0;
+const tiempoEl = document.getElementById("tiempo");
+const maxSegundos = 60;
+const timer = setInterval(() => {
+  segundos++;
+  tiempoEl.textContent = `00:${segundos.toString().padStart(2, '0')}`;
+  if (segundos >= maxSegundos) {
+    clearInterval(timer);
+    perderPartida("⏳ TIEMPO AGOTADO. ¡HAS PERDIDO LA PARTIDA!");
+  }
+}, 550);
+
+
+
+// 🔻 Modal con niebla roja, energía y animación
+function perderPartida(mensaje) {
+  // ⚙️ Enviar derrota al backend
+  fetch("/game/marcar_derrota/", {
+    method: "POST",
+    headers: { "X-CSRFToken": "{{ csrf_token }}" }
+  });
+
+  // 🎧 Reproducir sonido de derrota
+  const loseSound = document.getElementById("loseSound");
+  loseSound.currentTime = 0;
+  loseSound.play();
+
+  // 💀 Animar emoji de derrota
+  const emoji = document.getElementById("emojiDerrota");
+  emoji.style.animation = "aparecerEmoji 1.1s ease forwards";
+
+  // ⏳ Mostrar modal después de la animación
+  setTimeout(() => {
+    const modal = document.getElementById("loseModal");
+    const loseText = document.getElementById("loseText");
+    loseText.textContent = mensaje;
+    modal.classList.add("active");
+
+    // Botones de acción
+    document.getElementById("loseRetryBtn").onclick = () => window.location.reload();
+  }, 100);
+}
+
+
+
+
+    const iconos = ["🍎","🍌","🍇","🍓","🍉","🍒","🍍","🥭","🐶","🐱","🦊","🐻","🐼","🐸","🐢","🦋","🐠"];
+    const cartas = [{% for carta in cartas %}{ simbolo: "{{ carta.simbolo }}", posicion: {{ carta.posicion }} }{% if not forloop.last %},{% endif %}{% endfor %}];
+    const board = document.getElementById("board");
+const intentosEl = document.getElementById("intentos");
+const aciertosEl = document.getElementById("pares");
+
+
+let intentos = 0;
+    cartas.forEach((carta,i)=>{
+      const card=document.createElement("div"); card.classList.add("flip-card"); card.dataset.pos=i;
+      const inner=document.createElement("div"); inner.classList.add("flip-inner");
+      const front=document.createElement("div"); front.classList.add("flip-front"); front.textContent=carta.simbolo || "❓";
+      const back=document.createElement("div"); back.classList.add("flip-back");
+      for(let j=0;j<3;j++){ const fruta=document.createElement("div"); fruta.classList.add("fruta");
+        fruta.textContent=iconos[Math.floor(Math.random()*iconos.length)];
+        fruta.style.top=Math.random()*80+"%"; fruta.style.left=Math.random()*80+"%"; fruta.style.animationDelay=Math.random()*2+"s"; back.appendChild(fruta); }
+      inner.appendChild(front); inner.appendChild(back); card.appendChild(inner); board.appendChild(card);
+      card.addEventListener("click",()=>revealCard(card,i));
+    });
+
+    
+
+    function updateBoard(state){
+      const cards=document.querySelectorAll(".flip-card");
+      state.cartas.forEach((c,i)=>{
+        const card=cards[i]; const inner=card.querySelector(".flip-inner"); const front=card.querySelector(".flip-front");
+        if(c.emparejada){ card.classList.add("matched"); inner.style.transform="rotateY(180deg)"; front.textContent=c.simbolo; }
+        else if(c.revelada){ card.classList.add("revealed"); inner.style.transform="rotateY(180deg)"; front.textContent=c.simbolo; }
+        else{ card.classList.remove("revealed","matched"); inner.style.transform="rotateY(0deg)"; front.textContent="❓"; }
+      });
+    }
+
+    function updateCounters(state){
+      if(state.movimientos!==undefined)movimientosEl.textContent=state.movimientos;
+      if(state.aciertos!==undefined){ aciertosEl.textContent=state.aciertos; document.getElementById("pares").textContent=state.aciertos; }
+    }
+
+
+
+
+
+
+
+
+async function revealCard(card, pos) {
+  // Evita sonido doble si ya está revelada o emparejada
+  if (card.classList.contains("revealed") || card.classList.contains("matched")) return;
+
+  intentos++;
+  intentosEl.textContent = intentos;
+
+  // 🎵 Sonido al hacer clic (win8.wav)
+  const clickSound = document.getElementById("clickSound");
+  clickSound.pause();
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
+
+  try {
+    const res = await fetch(`/game/reveal/${pos}/`);
+    const data = await res.json();
+
+    console.log("🔍 Respuesta del backend:", data);
+
+    // ✅ Reproduce el sonido si el backend indica acierto
+    if (
+      (data.acierto && data.acierto === true) ||
+      (data.estado_partida && data.estado_partida.acierto === true)
+    ) {
+      const matchSound = document.getElementById("matchSound");
+      matchSound.pause();
+      matchSound.currentTime = 0;
+      matchSound.play().catch(() => {});
+    }
+
+    // 🎯 Si se gana
+    if (data.mensaje) {
+      document.getElementById("winSound").play();
+      lanzarConfeti();
+
+      const modal = document.getElementById("winModal");
+      const text = document.getElementById("victoryText");
+      text.textContent = data.mensaje;
+      modal.classList.add("active");
+
+      document.getElementById("retryBtn").onclick = () => window.location.reload();
+      document.getElementById("nextBtn").onclick = () => {
+        const transition = document.getElementById("galacticTransition");
+        transition.classList.add("active");
+        setTimeout(() => {
+          window.location.href = `/game/next_level/?nivel={{ nivel.nombre }}`;
+        }, 1000);
+      };
+      return;
+    }
+
+    // 🔹 Actualiza el tablero normalmente
+    if (data.estado_partida) {
+      updateBoard(data.estado_partida);
+      updateCounters(data.estado_partida);
+
+      if (data.estado_partida.ganada === true) {
+        setTimeout(() => mostrarModal(), 800);
+      }
+    }
+
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+
+
+
+function mostrarModal(){
+  document.getElementById("winModal").classList.add("active");
+  document.getElementById("winSound").play();
+  lanzarConfeti();
+
+  // 🧠 Aseguramos que los valores sean numéricos antes de enviarlos
+  const paresEncontrados = parseInt(document.getElementById("pares").textContent?.trim() || "0");
+const intentosTotales = parseInt(intentos || 0);
+
+// Validación adicional
+if (isNaN(paresEncontrados)) paresEncontrados = 0;
+if (isNaN(intentosTotales)) intentosTotales = 0;
+
+
+  fetch('/game/guardar_estadistica/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}',
+    },
+    body: JSON.stringify({
+      usuario: '{{ request.user.username }}',
+      nivel: '{{ nivel.nombre }}',
+      tiempo: document.getElementById("tiempo").textContent,
+      intentos: intentosTotales,
+      pares: paresEncontrados   // ✅ ahora nunca estará vacío
+    })
+  });
+}
+    
+
+
+
+
+    document.getElementById("retryBtn").onclick=()=>window.location.reload();
+    document.getElementById("nextBtn").onclick=()=>window.location.href=`/game/next_level/?nivel={{ nivel.nombre }}`;
+    document.getElementById("restartBtn").onclick=()=>window.location.href=`/game_board/?nivel={{ nivel.nombre|lower }}`;
+
+
+// 📦 Si el jugador sale o cambia de nivel antes de terminar → derrota automática
+window.addEventListener("beforeunload", () => {
+  navigator.sendBeacon("/game/marcar_derrota/");
+});
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    function lanzarConfeti(){
+      const duration=3*1000;
+      const animationEnd=Date.now()+duration;
+      const defaults={startVelocity:30,spread:360,ticks:60,zIndex:1000};
+      const interval=setInterval(()=>{
+        const timeLeft=animationEnd-Date.now();
+        if(timeLeft<=0)return clearInterval(interval);
+        const particleCount=80*(timeLeft/duration);
+        confetti({...defaults,particleCount,origin:{x:0.2,y:0.6}});
+        confetti({...defaults,particleCount,origin:{x:0.8,y:0.6}});
+      },250);
+    }
+  </script>
+
+
+
+
+<!-- TRANSICIÓN GALÁCTICA ENTRE NIVELES -->
+<div id="galacticTransition" class="galactic-transition">
+  <div class="particles"></div>
+  <div class="particles"></div>
+  <div class="particles"></div>
+  <h2>VIAJANDO AL SIGUIENTE NIVEL...🎮</h2>
+</div>
+
+</body>
+</html>

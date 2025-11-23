@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠G-1 JUEGO DE MEMORIA</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #0b132b, #000);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            animation: bgMove 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgMove {
+            from { background-position: left top; }
+            to { background-position: right bottom; }
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
+            animation: glowPulse 2s infinite ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff; }
+            50% { text-shadow: 0 0 25px #00ffff, 0 0 50px #00ffff; }
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            color: #e0e0e0;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .links {
+            margin-top: 25px;
+            display: flex;
+            gap: 25px;
+        }
+
+        a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid #00ffff;
+            padding: 8px 18px;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            background-color: #00ffff;
+            color: #000;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.3);
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-800px) scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+
+    <h1>JUEGO DE MEMORIA</h1>
+    <p>TE DA LA BIENVENIDA GRUPO - 1 — POR FAVOR INICIA SESION O REGISTARTE PARA JUGAR.</p>
+
+    <div class="links">
+        
+        <a href="{% url 'account_login' %}">INICIAR SESION</a>
+        <a href="{% url 'account_signup' %}">REGISTRARSE</a>
+
+    </div>
+
+    <script>
+        // 🎇 Generador de partículas flotantes
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 6 + 2;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.bottom = '-10px';
+            p.style.animationDuration = `${5 + Math.random() * 10}s`;
+            p.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(p);
+        }
+    </script>
+</body>
+</html>

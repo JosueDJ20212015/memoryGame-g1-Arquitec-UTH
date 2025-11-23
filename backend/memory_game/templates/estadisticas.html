@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mis Estadísticas</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(circle at center, #0a0a0a, #111827);
+        color: #fff;
+        text-align: center;
+        padding: 40px;
+      }
+
+      h1 {
+        color: #00c3ff;
+        margin-bottom: 30px;
+      }
+
+      table {
+        width: 80%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      th {
+        background: rgba(0, 195, 255, 0.2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .ganadas {
+        color: #00ff9d;
+      }
+      .perdidas {
+        color: #ff5d9e;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📊 Estadísticas de {{ usuario.username }}</h1>
+
+    <table>
+      <tr>
+        <th>Nivel</th>
+        <th>Partidas Totales</th>
+        <th class="ganadas">Victorias</th>
+        <th class="perdidas">Derrotas</th>
+        <th>Promedio de Intentos</th>
+      </tr>
+
+      {% for e in estadisticas %}
+      <tr>
+        <td>{{ e.nivel.nombre }}</td>
+        <td>{{ e.total_partidas }}</td>
+        <td class="ganadas">{{ e.victorias }}</td>
+        <td class="perdidas">{{ e.derrotas }}</td>
+        <td>{{ e.promedio_intentos }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">Aún no hay estadísticas registradas.</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

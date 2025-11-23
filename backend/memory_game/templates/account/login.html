@@ -1,0 +1,126 @@
+{% load socialaccount %} 
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🔐 Iniciar Sesión</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* [ ... Tu CSS existente para body, .login-box, h2, form, label, input, button, .extra-links, .google-btn ... ] */
+        
+        /* Incluyo el CSS aquí para claridad */
+        body {
+            background: radial-gradient(circle at center, #000814, #001d3d);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .login-box {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            text-align: center;
+            width: 350px;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #00bfff;
+            text-shadow: 0 0 10px #00bfff;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            background-color: #001d3d;
+            color: #fff;
+        }
+        button {
+            padding: 10px;
+            background-color: #00bfff;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00bfff;
+            transition: all 0.3s ease-in-out;
+            width: 100%; /* Aseguramos que los botones ocupen todo el ancho */
+            margin-top: 5px; /* Espacio para separar botones */
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #00ffff;
+        }
+        .extra-links {
+            margin-top: 15px;
+        }
+        .extra-links a {
+            color: #00bfff;
+            text-decoration: none;
+        }
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+        .google-btn {
+            background-color: #db4437; /* Color de Google */
+            color: white;
+            box-shadow: 0 0 10px #ff6666;
+        }
+        .google-btn:hover {
+            box-shadow: 0 0 25px #ff9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>🔐 Iniciar Sesión</h2>
+
+        {% if form.errors %}
+            <p style="color: #ff4d4d;">Usuario o contraseña incorrectos</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            
+            {{ form.login.label_tag }}
+            {{ form.login }}
+
+            {{ form.password.label_tag }}
+            {{ form.password }}
+
+            <button type="submit">Ingresar</button>
+        </form>
+        
+        <p style="margin: 15px 0; font-size: 0.8rem; color: #aaa;">— O —</p>
+
+        <a href="{% provider_login_url 'google' %}">
+            <button type="button" class="google-btn">
+                Iniciar sesión con Google
+            </button>
+        </a>
+
+        <div class="extra-links">
+            <p>¿No tienes cuenta? <a href="{% url 'account_signup' %}">Regístrate aquí</a></p>
+        </div>
+    </div>
+</body>
+</html>

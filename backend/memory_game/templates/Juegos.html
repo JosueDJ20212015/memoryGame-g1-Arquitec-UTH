@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Juego de Memoria</title>
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #0a0a1a, #000);
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #00c3ff;
+      text-shadow: 0 0 15px #00c3ff;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 15px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .flip-card {
+      width: 100px;
+      height: 100px;
+      perspective: 600px;
+    }
+
+    .flip-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .flip-card.revealed .flip-inner,
+    .flip-card.matched .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .flip-back {
+      background: linear-gradient(145deg, #0b2342, #0d3a66);
+      color: #ff5d9e;
+    }
+
+    .flip-front {
+      background: #00c3ff;
+      color: #000;
+      transform: rotateY(180deg);
+    }
+
+    button {
+      background: #0077ff;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 30px;
+    }
+
+    button:hover {
+      background-color: #0099ff;
+      box-shadow: 0 0 15px rgba(0, 170, 255, 0.9);
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 1em;
+      color: #00c3ff;
+      text-shadow: 0 0 10px #00c3ff;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 30, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #0a264d, #0e3d73);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      width: 400px;
+      box-shadow: 0 0 25px rgba(0, 180, 255, 0.8);
+    }
+
+    .modal h2 {
+      color: #00c3ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Juego de Memoria</h1>
+
+  <div id="board"></div>
+  <button id="restartBtn">🔄 REINICIAR</button>
+
+  <div class="footer">
+    Nivel actual: <strong>{{ nivel.nombre }}</strong> — Cartas: {{ cartas|length }}
+  </div>
+
+  <div class="modal" id="winModal">
+    <div class="modal-content">
+      <h2>🎉 ¡EXCELENTE!</h2>
+      <p>Has completado el nivel actual.</p>
+      <button id="retryBtn">🔁 JUGAR DE NUEVO</button>
+      <button id="nextBtn"⏭️ SIGUIENTE NIVEL</button>
+    </div>
+  </div>
+
+  <audio id="winSound" src="{% static 'sounds/win.wav' %}" preload="auto"></audio>
+  <audio id="matchSound" src="{% static 'sounds/win2.wav' %}" preload="auto"></audio>
+
+  <script>
+    const cartas = [
+      {% for carta in cartas %}
+        { simbolo: "{{ carta.simbolo }}", posicion: {{ carta.posicion }} }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ];
+
+    const board = document.getElementById("board");
+
+    // 🃏 Crear el tablero
+    cartas.forEach((carta, i) => {
+      const card = document.createElement("div");
+      card.classList.add("flip-card");
+      card.dataset.pos = i;
+
+      const inner = document.createElement("div");
+      inner.classList.add("flip-inner");
+
+      const front = document.createElement("div");
+      front.classList.add("flip-front");
+      front.textContent = carta.simbolo || "❓";
+
+      const back = document.createElement("div");
+      back.classList.add("flip-back");
+      back.textContent = "❓";
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+      board.appendChild(card);
+
+      card.addEventListener("click", () => revealCard(card, i));
+    });
+
+    // 🔁 Mostrar cartas al hacer clic
+    async function revealCard(card, pos) {
+      if (card.classList.contains("revealed") || card.classList.contains("matched")) return;
+
+      try {
+        const res = await fetch(`/game/reveal/${pos}/`);
+        const data = await res.json();
+
+        if (data.estado_partida) updateBoard(data.estado_partida);
+        if (data.estado_partida && data.estado_partida.ganada)
+          setTimeout(() => mostrarModal(), 600);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    }
+
+    // 🧩 Actualizar visualmente el tablero
+    function updateBoard(state) {
+  const cards = document.querySelectorAll(".flip-card");
+  state.cartas.forEach((c, i) => {
+    const card = cards[i];
+    const front = card.querySelector(".flip-front");
+
+    if (c.emparejada) {
+      card.classList.add("matched");
+      card.classList.remove("revealed");
+      front.textContent = c.simbolo || "❓"; // ✅ Muestra el emoji
+    } else if (c.revelada) {
+      card.classList.add("revealed");
+      front.textContent = c.simbolo || "❓";
+    } else {
+      card.classList.remove("revealed", "matched");
+      front.textContent = "❓";
+    }
+  });
+}
+
+
+    // 🎉 Mostrar modal de victoria
+    function mostrarModal() {
+      document.getElementById("winModal").classList.add("active");
+      document.getElementById("winSound").play();
+    }
+
+    // 🔁 Botones
+    document.getElementById("retryBtn").onclick = () => window.location.reload();
+    document.getElementById("nextBtn").onclick = () => (window.location.href = "/game/next_level/");
+    document.getElementById("restartBtn").onclick = function () {
+      const nivel = "{{ nivel.nombre|lower }}";
+      window.location.href = `/game_board/?nivel=${nivel}`;
+    };
+  </script>
+</body>
+</html>

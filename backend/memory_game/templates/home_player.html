@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>🎮 Pantalla del Jugador</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #000000, #0b132b, #1c2541);
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #00bcd4;
+            text-shadow: 0 0 10px #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #cfd8dc;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            margin: 10px;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 10px #00bcd4;
+        }
+
+        .btn:hover {
+            background: #0097a7;
+            box-shadow: 0 0 20px #00bcd4;
+            transform: scale(1.05);
+        }
+
+        .logout {
+            background: #e91e63;
+        }
+
+        .logout:hover {
+            background: #c2185b;
+            box-shadow: 0 0 20px #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 ¡Bienvenido, {{ user.username }}!</h1>
+    <p>Prepárate para poner a prueba tu memoria</p>
+
+    <div class="buttons">
+        <a href="{% url 'game_board' %}" class="btn">🃏 Jugar Juego</a>
+        <form action="{% url 'account_logout' %}" method="post" style="display:inline;">
+           {% csrf_token %}
+            <button type="submit" class="btn logout">🚪 Cerrar sesión</button>
+        </form>
+
+    </div>
+</body>
+</html>

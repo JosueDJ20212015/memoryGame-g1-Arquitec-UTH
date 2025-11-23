@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMINISTRADOR</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #0b132b, #1c2541, #3a506b);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Animación sutil de iluminación */
+        @keyframes lightPulse {
+            0% { background-color: #0b132b; }
+            50% { background-color: #111d3c; }
+            100% { background-color: #0b132b; }
+        }
+
+        body {
+            animation: lightPulse 8s ease-in-out infinite alternate;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
+            width: 90%;
+            max-width: 450px;
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #cfcfcf;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: block;
+            margin: 12px auto;
+            padding: 14px 28px;
+            border-radius: 40px;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            width: 80%;
+        }
+
+        .btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 25px #00ffff;
+            transform: scale(1.05);
+        }
+
+        .logout {
+            background: #ff004c;
+            border: 2px solid #ff004c;
+            color: #fff;
+            margin-top: 25px;
+        }
+
+        .logout:hover {
+            background: transparent;
+            color: #ff004c;
+            box-shadow: 0 0 25px #ff004c;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 15px;
+            color: #aaa;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        /* Partículas flotantes */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.3);
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-800px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles"></div>
+
+    <div class="admin-container">
+        <h1>⚙️ Panel de Administrador</h1>
+        <p>Bienvenido, <strong>{{ user.username }}</strong></p>
+
+        <a href="/admin/" class="btn">🧩 IR AL PANEL DE Django</a>
+        <a href="{% url 'game_board' %}" class="btn">🎮 JUGAR JUEGO</a>
+        
+
+
+        <form action="{% url 'account_logout' %}" method="post" style="display:inline;">
+           {% csrf_token %}
+            <button type="submit" class="btn logout">🚪 Cerrar sesión</button>
+        </form>
+    </div>
+
+    <div class="footer">GRUPO - 1</div>
+
+    <script>
+        // 🎇 Generador de partículas flotantes (sin sacudidas)
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 35; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 6 + 2;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.bottom = '-10px';
+            p.style.animationDuration = `${6 + Math.random() * 8}s`;
+            p.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(p);
+        }
+    </script>
+
+</body>
+</html>

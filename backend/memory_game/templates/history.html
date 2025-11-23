@@ -1,0 +1,69 @@
+{% extends "base.html" %}   {# si usas base.html; si no, quita esta línea y agrega <html> completo #}
+{% load static %}
+
+{% block content %}
+<div class="history-container" style="max-width:1000px;margin:40px auto;color:#fff;">
+    <h1 style="color:#00c3ff;text-shadow:0 0 12px rgba(0,195,255,0.2);">Mis Partidas</h1>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">
+        <div style="background:#0c2438;padding:14px;border-radius:8px;min-width:200px;">
+            <strong>Total partidas</strong>
+            <div style="font-size:1.4em;margin-top:6px;">{{ stats.total_partidas }}</div>
+        </div>
+        <div style="background:#0c2438;padding:14px;border-radius:8px;min-width:200px;">
+            <strong>Victorias</strong>
+            <div style="font-size:1.4em;margin-top:6px;">{{ stats.victorias }}</div>
+        </div>
+        <div style="background:#0c2438;padding:14px;border-radius:8px;min-width:200px;">
+            <strong>Derrotas</strong>
+            <div style="font-size:1.4em;margin-top:6px;">{{ stats.derrotas }}</div>
+        </div>
+        <div style="background:#0c2438;padding:14px;border-radius:8px;min-width:200px;">
+            <strong>Promedio intentos</strong>
+            <div style="font-size:1.4em;margin-top:6px;">{{ stats.promedio_intentos }}</div>
+        </div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;color:#fff;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <th style="padding:10px">Nivel</th>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Activa</th>
+                <th>Ganada</th>
+                <th>Movimientos</th>
+                <th>Aciertos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in page_obj %}
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
+                <td style="padding:12px;">{{ p.nivel.nombre }}</td>
+                <td>{{ p.fecha_inicio|date:"d M Y H:i" }}</td>
+                <td>
+                    {% if p.fecha_fin %}{{ p.fecha_fin|date:"d M Y H:i" }}{% else %}--{% endif %}
+                </td>
+                <td>{% if p.activa %}✅{% else %}—{% endif %}</td>
+                <td>{% if p.ganada %}🏆{% else %}—{% endif %}</td>
+                <td>{{ p.movimientos }}</td>
+                <td>{{ p.aciertos }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" style="padding:20px;text-align:center;">No tienes partidas todavía.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- paginador -->
+    <div style="margin-top:18px;text-align:center;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" style="margin-right:10px;color:#00c3ff;">« Anterior</a>
+        {% endif %}
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" style="margin-left:10px;color:#00c3ff;">Siguiente »</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

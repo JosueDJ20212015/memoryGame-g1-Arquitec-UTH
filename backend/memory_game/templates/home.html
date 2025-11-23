@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🧠 Juego de Memoria</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div id="particles"></div>
+
+    <div class="container">
+        <h1>🧠 Juego de Memoria</h1>
+        <p>Bienvenido, {{ user.username|default:"Invitado" }}</p>
+
+        {% if user.is_authenticated %}
+            <button onclick="window.location.href='/game/play/'">🎮 Jugar</button>
+            {% if user.is_staff %}
+                <button onclick="window.location.href='/admin/memory_game/nivel/'">⚙️ Panel de Administración</button>
+            {% endif %}
+            <button onclick="window.location.href='/logout/'">🚪 Cerrar sesión</button>
+        {% else %}
+            <button onclick="window.location.href='/login/'">🔐 Iniciar sesión</button>
+            <button onclick="window.location.href='/register/'">🧾 Registrarse</button>
+        {% endif %}
+    </div>
+</body>
+</html>
