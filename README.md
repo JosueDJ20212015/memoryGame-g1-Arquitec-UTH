@@ -86,3 +86,59 @@ pip install -r requirements.txt
 ``` copy
 python manage.py migrate
 ```
+4. Ejecutar servidor
+``` copy
+python manage.py runserver
+```
+
+## 🐋 Ejecución con Docker Compose
+Construir contenedores:
+``` copy
+docker compose build
+```
+Ejecutar:
+``` copy
+docker compose up -d
+```
+Para ver contenedores:
+``` copy
+docker ps
+```
+
+## 🔒 Variables de Entorno (.env)
+Ejemplo:
+``` copy
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=memorygame-grupo1.com,www.memorygame-grupo1.com
+SECRET_KEY=clave
+POSTGRES_DB=memorygame
+POSTGRES_USER=grupo1
+POSTGRES_PASSWORD=******
+DB_HOST=db
+DB_PORT=5432
+```
+
+## 🛢️ Migración SQLite → PostgreSQL
+Este proyecto fue migrado manualmente a PostgreSQL para mejorar:
+
+- Rendimiento
+- Concurrencia
+- Integridad
+- Escalabilidad
+
+Pasos clave:
+1. Actualización del archivo settings.py.
+2. Configuración del servicio DB en docker-compose.yml.
+3. Reconstrucción de migraciones:
+   ``` copy
+docker compose exec web python manage.py migrate
+```
+
+## 👥 Autores
+Grupo 1 - Clase Arquitectura de computadoras
+
+## 🏁 Estado Actual
+✔️ Proyecto completamente funcional
+✔️ Desplegado en producción
+✔️ Alojado bajo dominio propio
+✔️ Configuración profesional con estándares reales
